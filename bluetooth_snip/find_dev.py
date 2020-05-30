@@ -61,9 +61,14 @@ def find_device(target_address):
 
 
 if __name__ == "__main__":
-    target_address = sys.argv[1]
+    try:
+        target_address = sys.argv[1]
+    except IndexError as e:
+        print("you should input target mac address ex) aa:aa:aa:aa:aa:aa")
     find_device(target_address)
 
 
 
 #타겟 디바이스는 bluetooth 4.0LE -> 페어링 없이 모두가 접속 가능함. (맥 어드레스만 잘 확인하면 가능.)
+# -> service 의 종류에 따라서 uuid 가 변하는데 자세한 내용은 
+# http://www.hardcopyworld.com/gnuboard5/bbs/board.php?bo_table=lecture_tip&wr_id=20 참고

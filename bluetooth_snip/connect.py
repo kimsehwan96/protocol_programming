@@ -6,12 +6,13 @@ import find_dev
 
 
 def recv_msg(ADDR):
-    uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
+    # 상대 기기의 uuid를 알아야 하나?
+    uuid = "F749CD16-2AEB-C7B1-9A37-EE1776F7EA11"
     print("Now we will try to connect to ADDR {}".format(ADDR))
 
     server_sock = BluetoothSocket( RFCOMM )
     server_sock.bind((ADDR, PORT_ANY))
-    server_sock.listen()
+    server_sock.listen(1)
 
     port = server_sock.getsockname()[1]
 
@@ -46,5 +47,6 @@ def recv_msg(ADDR):
             break
 
 if __name__ == "__main__":
-    target_address = find_dev.find_device(sys.argv[1])
+    target_address = sys.argv[1]
+    target_address = find_dev.find_device(target_address)
     recv_msg(target_address)
