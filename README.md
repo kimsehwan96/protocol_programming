@@ -25,3 +25,9 @@
     추가적으로 설치 과정에서 xcode를 이용한 build 과정이 포함 되어 있으므로.
     `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` 를 이용해서 빌드 & 설치 한 뒤
     `sudo xcode-select --switch /Library/Developer/CommandLineTools` 로 원상 복구하면 되겠다.
+
+# MAC OSX 10.15.xx gattlib issue
+    MAC OS에서는 BLE 통신을 위한 패키지인 gattlib 설치가 불가능 하다.
+    여러 방면으로 찾아 봤으나 지원이 안된다고 함. 
+    따라서 대안으로 bluepy 라는 패키지 고려 중.
+    https://github.com/IanHarvey/bluepy
