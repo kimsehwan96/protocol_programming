@@ -1,7 +1,9 @@
+import os
+import json
 from socket import *
 from datetime import datetime
 from time import sleep
-import json
+from struct import pack, unpack
 
 # default Bosch gateway's sampling time = 100ms
 
@@ -44,8 +46,6 @@ TEST_BUFF = {
     'tempreature': [1, 1, 1]
     }
 
-
-
 def init_buffer(fields: list): #input fields list
     BUFF = {}
     for i in fields:
@@ -56,6 +56,10 @@ def init_buffer(fields: list): #input fields list
 # ]
 
 # sending binary data as [brake_value, pressure_value, temperature_value, valve_value]
+
+def convert_data(user_data, data):
+    fmt = user_data['payload']['format']
+    return pack(fmt, *data)
 
 def split_data(byte_data: bytes):
     decoded_data = byte_data.decode('utf-8')
@@ -70,14 +74,28 @@ def vaildate_data(byte_data: bytes):
         return False
     else:
         return True
-        
+
+def parsing_data(list_data: list, buf: dict):
+    for i in list_data:
+        dict_data = json.loads(i)
+        print("this is dict_data{}".format(dict_data))
+        field = list(dict_data.keys())[0]
+        print("this is field {}".format(field))
+        print("this is buf {}".format(buf))
+        buf[field].append(dict_data[field])
+    print("parsed dict {}".format(buf))
+
+
+
 def recv_msg(host: str, port: int, fields: list):
     print("this is fields {}".format(fields))
+    buf = init_buffer(fields)
     sock = socket(AF_INET,SOCK_STREAM)
     sock.bind((host,port))
     sock.listen(1)
-    connectionSock, addr = sock.accept() #inital connection printing.
+    connectionSock, addr = sock.accept() #inital connection printing
     print(str(addr), "address")
+
     while True:
         data = connectionSock.recv(65536)
         #print("this is first datas :{}".format(data))
@@ -89,11 +107,16 @@ def recv_msg(host: str, port: int, fields: list):
         result = split_data(data)
         print(result)
         print("-"*50)
-       
+        parsing_data(result, buf)
 
+        #TODO: 데이터를 수집한 이후 dict 데이터를 주기적으로 clear 할 필요가 있음.
+        # 그렇지 않으면 메모리 누수 발생함. 
+        # 주기적으로 init_buffer를 하는게 맞을듯.
 
 if __name__ == "__main__":
     fields = TEST_DATA_SOURCE['payload'].get("fields")
+    print(init_buffer(fields))
+    buff = init_buffer(fields)
     recv_msg('', 55065, fields)
 
     
