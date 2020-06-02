@@ -6,8 +6,6 @@ from time import sleep
 from struct import pack, unpack
 
 # default Bosch gateway's sampling time = 100ms
-
-#ordered list.
 TEST_DATA_SOURCE = {
   "id": "main_plc",
   "edgeId": "test",
@@ -46,17 +44,16 @@ TEST_BUFF = {
     'tempreature': [1, 1, 1]
     }
 
+fields = TEST_DATA_SOURCE['payload'].get("fields")
+sampling_time = TEST_DATA_SOURCE.get("period")
+
 def init_buffer(fields: list): #input fields list
     BUFF = {}
     for i in fields:
         BUFF[i] = []
     return BUFF
 
-#[ "brake", "pressure" , "temperature", "valve"
-# ]
-
 # sending binary data as [brake_value, pressure_value, temperature_value, valve_value]
-
 def convert_data(user_data, data):
     fmt = user_data['payload']['format']
     return pack(fmt, *data)
@@ -64,9 +61,7 @@ def convert_data(user_data, data):
 def split_data(byte_data: bytes):
     decoded_data = byte_data.decode('utf-8')
     split_data = decoded_data.split('\n')
-    #leng = len(split_data)
-    processed_list = split_data[:-1:] #:leng]
-
+    processed_list = split_data[:-1:]
     return processed_list
 
 def vaildate_data(byte_data: bytes):
@@ -78,22 +73,22 @@ def vaildate_data(byte_data: bytes):
 def parsing_data(list_data: list, buf: dict):
     for i in list_data:
         dict_data = json.loads(i)
-        print("this is dict_data{}".format(dict_data))
+        #print("this is dict_data{}".format(dict_data))
         field = list(dict_data.keys())[0]
-        print("this is field {}".format(field))
-        print("this is buf {}".format(buf))
+        #print("this is field {}".format(field))
+        #print("this is buf {}".format(buf))
         buf[field].append(dict_data[field])
-    print("parsed dict {}".format(buf))
+    #print("parsed dict {}".format(buf))
     return buf
 
 def lastest_data(stored_buffer: dict, fields: list):
-    lastest_list = []
-
-
-    return lasted_list
+    latest_list = []
+    for i in fields:
+        latest_list.append(i)
+    stored_buffer = init_buffer(fields) # reset buffer
+    print("this is latest_data{}".format(lastest_data))
+    return latest_list
 #TODO: making latest_data function to get latest data in dictionary
-
-
 
 def recv_msg(host: str, port: int, fields: list):
     print("this is fields {}".format(fields))
@@ -103,26 +98,22 @@ def recv_msg(host: str, port: int, fields: list):
     sock.listen(1)
     connectionSock, addr = sock.accept() #inital connection printing
     print(str(addr), "address")
-
     while True:
         data = connectionSock.recv(65536)
-        #print("this is first datas :{}".format(data))
         while vaildate_data(data) == False:
-        #    print("True or False splitdata {}".format(vaildate_data(data)))
             data += connectionSock.recv(65536)
-        #    print("this is combine data {}".format(data))
-
         result = split_data(data)
         print(result)
         print("-"*50)
-        parsing_data(result, buf)
+        stored_buf = parsing_data(result, buf) #dictionary return
+        sleep(sampling_time)
+        lastest_data(stored_buf, fields) # this is actual pushing data
 
         #TODO: 데이터를 수집한 이후 dict 데이터를 주기적으로 clear 할 필요가 있음.
         # 그렇지 않으면 메모리 누수 발생함. 
         # 주기적으로 init_buffer를 하는게 맞을듯.
 
 if __name__ == "__main__":
-    fields = TEST_DATA_SOURCE['payload'].get("fields")
     print(init_buffer(fields))
     buff = init_buffer(fields)
     recv_msg('', 55065, fields)
