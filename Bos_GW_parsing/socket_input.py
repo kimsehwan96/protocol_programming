@@ -84,6 +84,14 @@ def parsing_data(list_data: list, buf: dict):
         print("this is buf {}".format(buf))
         buf[field].append(dict_data[field])
     print("parsed dict {}".format(buf))
+    return buf
+
+def lastest_data(stored_buffer: dict, fields: list):
+    lastest_list = []
+
+
+    return lasted_list
+#TODO: making latest_data function to get latest data in dictionary
 
 
 
