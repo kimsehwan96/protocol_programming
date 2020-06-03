@@ -34,7 +34,7 @@ TEST_DATA_SOURCE = {
     ],
     "type": "ARRAY"
   },
-  "period": 100 # 500ms
+  "period": 100 # 100ms
 }
 
 TEST_BUFF = {
@@ -89,7 +89,7 @@ def latest_data(stored_buffer: dict, fields: list):
         except IndexError as e: #when first few ms in this code runs, PR21 Doesn't send all of fields datas so we need to wait few ms
             latest_list.append(None)
     stored_buffer = init_buffer(fields) # reset buffer
-    print("this is latest_data{}".format(latest_list))
+    print("this is latest_data{} : time stamp {}".format(latest_list, datetime.now()))
     return latest_list
 #TODO: making latest_data function to get latest data in dictionary
 
