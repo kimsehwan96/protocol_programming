@@ -34,7 +34,7 @@ TEST_DATA_SOURCE = {
     ],
     "type": "ARRAY"
   },
-  "period": 100 # 100ms
+  "period": 1000 # 100ms
 }
 
 TEST_BUFF = {
