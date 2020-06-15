@@ -17,5 +17,11 @@ def authenticate_and_get_token(username: str, password: str,
     print("Log in success")
     print("Access token:", resp['AuthenticationResult']['AccessToken'])
     print("ID token:", resp['AuthenticationResult']['IdToken'])
+    print("-"*100)
+    print("this is all result", resp['AuthenticationResult'])
 
 
+
+if __name__ == "__main__":
+    #use above function
+    pass
