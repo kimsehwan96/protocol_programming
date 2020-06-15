@@ -1,3 +1,5 @@
+import boto3
+
 def authenticate_and_get_token(username: str, password: str, 
                                user_pool_id: str, app_client_id: str) -> None:
     client = boto3.client('cognito-idp')
@@ -15,4 +17,5 @@ def authenticate_and_get_token(username: str, password: str,
     print("Log in success")
     print("Access token:", resp['AuthenticationResult']['AccessToken'])
     print("ID token:", resp['AuthenticationResult']['IdToken'])
+
 
