@@ -47,9 +47,12 @@ class Header(BaseClass):
             str_object += chr(i)
         return str_object
     
-    def return_hex(self):
+    def GetHex(self):
+        hex_list = []
         for i in self.all_code:
-            print(hex(i))
+            hex_list.append(hex(i))
+        print(hex_list)
+        return hex_list #returing list of hex
 
 
 
@@ -60,12 +63,14 @@ if __name__ == '__main__':
     msg_ord = []
     for i in msg:
         msg_ord.append(ord(i))
-
-    h = Header(struct.pack('=28b',*msg_ord))
+    
+    buffer = struct.pack('=28b', *msg_ord)
+    print("this is buffer {}".format(buffer))
+    h = Header(buffer)
     print(h.GetBytes())
     print(h.GetSize())
     print(h.making_code(h.operand))
-    h.return_hex()
+    h.GetHex()
 
         
 

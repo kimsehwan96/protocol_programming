@@ -11,6 +11,8 @@ class BaseClass:
     def GetSize(self):
         pass
 
+    def GetHex(self):
+        pass
 
 class Message(BaseClass):
     
@@ -37,7 +39,7 @@ def __generate_crc16_table():
                 crc = (crc >> 1) ^ 0xa001
             else: crc >>= 1
             byte >>= 1
-        result.append(crc)
+        result.append(hex(crc))
     return result
 
 def computeCRC(data):
