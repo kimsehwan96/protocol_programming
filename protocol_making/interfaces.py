@@ -15,5 +15,3 @@ class BaseFramer(object):
     """
     올바른 Frame대로 왔는지 체크
     """
-
-    

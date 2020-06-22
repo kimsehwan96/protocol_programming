@@ -156,22 +156,6 @@ class DataGather(DataFramer):
         msg = "테스트용 메시지 입니다."
         return msg #string 형태로 return?
 
-class DataSender(DataFramer):
-    """
-    this class will make some header & body & tail for server
-    """
-    def making_header(self):
-        pass
-
-    def making_body(self):
-        pass
-
-    def making_tail(self):
-        pass
-    
-    @staticmethod
-    def send(self):
-        print("message sended")
 
 """ 위 클래스는 -> 새로운 클래스로 만들어서, 팩토리에서 쓰일 것에 기본 틀로 상속해야 할듯. 여기있으면 안됨 """
 
@@ -191,12 +175,16 @@ class PDUM2(DataFramer):
         print("PDUM2")
 """
 
-class TDAT(DataSender):
+class TDAT(DataFramer):
+    def __init__(self, *args):
+        super().__init__(ip_addr, port_number)
+
     def making_header(self):
         self.header['operand'] = 'TDAT'
         self.header['factoryCode'] = factoryCode
         self.header['chimneyCode'] = chimeyCode
         self.header['length'] = self.check_code_length()
+        self.header['startedAt'] = DATETIME
 
     def making_body(self):
         pass
@@ -215,6 +203,8 @@ class TDAT(DataSender):
     def send(self):
         print("this oper is TDAT ! !")
         print("Parents class TDAT was executed!")
+        self.making_header()
+        print("this is made header !! {}".format(self.header))
 
 
 
