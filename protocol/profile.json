@@ -1,0 +1,8 @@
+{
+    "target_ip" : "127.0.0.1",
+    "target_port": "9999",
+    "edgeID" : "sehwan_test",
+    "factory_code" : "12345",
+    "chimey_code" : "12345",
+    "describe" : "None"
+}
