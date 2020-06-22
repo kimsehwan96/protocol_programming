@@ -13,6 +13,13 @@ class Header(BaseClass):
 
         if buffer != None:
             unpacked = struct.unpack(self.struct_fmt, buffer)
+            self._header = {
+                'operand' : unpacked[0:4],
+                'factory_code' : unpacked[4:11],
+                'chimney_code' : unpacked[11:14],
+                'msg_length' : unpacked[14:18],
+                'check_time' : unpacked[18:28]
+            }
             self.operand = unpacked[0:4] #4바이트
             self.factory_code = unpacked[4:11] #7바이트
             self.chimney_code = unpacked[11:14] #3바이트
@@ -25,9 +32,13 @@ class Header(BaseClass):
             pass
         #TODO : if data is not in buffer async process will do.
 
+    def check_frame(self, buffer):
+        pass
+
     def GetBytes(self):
         return struct.pack(
             self.struct_fmt,
+            """
             *(
                 *self.operand,
                 *self.factory_code,
@@ -35,6 +46,8 @@ class Header(BaseClass):
                 *self.msg_length,
                 *self.check_time
             )
+            """
+            *self.all_code
         )
     
     def GetSize(self):
@@ -53,6 +66,11 @@ class Header(BaseClass):
             hex_list.append(hex(i))
         print(hex_list)
         return hex_list #returing list of hex
+
+class Body(BaseClass):
+    def __init__(self, buffer):
+        pass
+
 
 
 

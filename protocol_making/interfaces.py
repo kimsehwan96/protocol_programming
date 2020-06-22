@@ -7,3 +7,13 @@ class singleton(object):
 
 
 # 싱글톤 객체 생성.
+
+class BaseFramer(object):
+
+    def checkFrame(self):
+        pass
+    """
+    올바른 Frame대로 왔는지 체크
+    """
+
+    
