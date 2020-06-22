@@ -5,19 +5,14 @@ import datetime
 import json
 import traceback
 
-filepath = 'profile.json'
-encoding = 'ascii'
-
-
 #데이터 처리는 hex ascii로. byte로 받은 데이터를 ascii -> hex로 변환.
-
+dt = datetime.datetime.now()
+DATETIME =str(dt.year) + str(dt.month) + str(dt.day) + str(dt.hour) + str(dt.minute)
 ACK = 0x06
 NAK = 0x15
 EOT = 0x04
-#magic numbers
-dt = datetime.datetime.now()
-DATETIME =str(dt.year) + str(dt.month) + str(dt.day) + str(dt.hour) + str(dt.minute)
-
+filepath = 'profile.json'
+encoding = 'ascii'
 operands = {
     "TDAT",
     "PDUM",
@@ -34,7 +29,6 @@ operands = {
     "PSET"
 }
 
-
 with open(filepath, 'r') as f:
     try:
         response = json.load(f)
@@ -43,6 +37,9 @@ with open(filepath, 'r') as f:
 
 ip_addr = response['target_ip']
 port_number = int(response['target_port'])
+factoryCode = response['factoryCode']
+chimeyCode = response['chimeyCode']
+
 
 class Command:
 
@@ -178,23 +175,42 @@ class DataSender(DataFramer):
 
 """ 위 클래스는 -> 새로운 클래스로 만들어서, 팩토리에서 쓰일 것에 기본 틀로 상속해야 할듯. 여기있으면 안됨 """
 
-class PDUM(ReceiveCmd):
+"""
+class PDUM(DataFramer):
     def __init__(self):
         pass
 
     def send(self):
         print("PDUM")
 
-class PDUM2(ReceiveCmd):
+class PDUM2(DataFramer):
     def __init__(self):
         pass
 
     def send(self):
         print("PDUM2")
+"""
 
-class TDAT(ReceiveCmd):
-    def __init__(self):
+class TDAT(DataSender):
+    def making_header(self):
+        self.header['operand'] = 'TDAT'
+        self.header['factoryCode'] = factoryCode
+        self.header['chimneyCode'] = chimeyCode
+        self.header['length'] = self.check_code_length()
+
+    def making_body(self):
         pass
+    
+    def making_tail(self):
+        pass
+
+    def check_code_length(self):
+        return 5
+    #TODO: before making all code, do check header + body + tail legnth & put is in the header
+
+    def making_code(self):
+        return self.header + self.body + self.tailor
+        #TODO: making this code as binary code ! with struct.pack !! above is tmp
 
     def send(self):
         print("this oper is TDAT ! !")
