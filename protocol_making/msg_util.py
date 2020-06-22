@@ -1,6 +1,8 @@
 import socket
 import util
-from header import Header
+from message_format import Header
+
+TEST_VAR = 0x00
 
 class MessageUtil:
     @staticmethod
