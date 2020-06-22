@@ -6,7 +6,7 @@ import socket
 
 #데이터 처리는 hex ascii로. byte로 받은 데이터를 ascii -> hex로 변환.
 
-command = {
+operands = {
     "TDAT",
     "PDUM",
     "TDUM",

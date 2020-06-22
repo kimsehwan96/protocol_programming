@@ -4,9 +4,11 @@ import socket
 import datetime
 import json
 import traceback
+import command
 
 filepath = 'profile.json'
 encoding = 'ascii'
+operands = command.operands #dict
 
 with open(filepath, 'r') as f:
     try:
@@ -22,23 +24,37 @@ class DataGather(object):
     def __init__(self, ip, port):
         self.ip = ip_addr
         self.port = port_number
+        self.buffer = None
         self.client = None
         if self.client == None:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((ip_addr, port_number))
             self.client = client
-        self.buffer = None
+        else:
+            pass
+        self.oper
+
+    def get_data_recv(self):
+        self.buffer = self.client.recv(1024)
+        return self.buffer
 
     def check_init_frame(self):
-        pass
+        if self.get_operands in operands:
+            return True
+        else:
+            return False
 
     def devide_header(self):
-        pass
+        if self.oper == None:
+            pass
+        else:
+            pass
 
     def get_operands(self):
-        operands = self.client.recv(4)
-        oper = operands.decode(encoding = encoding)
-        return oper #str 'TDAT' return
+        tmp_buffer = self.get_data_recv()
+        operands = tmp_buffer[0:4]
+        self.oper = operands.decode(encoding = encoding)
+        return self.oper #str 'TDAT' return
 
 
 
