@@ -10,10 +10,22 @@ ip_addr = '127.0.0.1'
 port = 9999
 
 sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #TCP connections
-sk.connect(ip_addr, port)
+sk.connect((ip_addr, port))
 
 command = {
-    #input magicnummber
+    "TDAT",
+    "PDUM",
+    "TDUM",
+    "TFDT",
+    "PSEP",
+    "TVER",
+    "PTIM",
+    "PUPG",
+    "TUPG",
+    "TCNG",
+    "PVER",
+    "DVER",
+    "PSET"
 }
 
 class Command:
@@ -21,18 +33,24 @@ class Command:
     __metaclass__ = abc.ABCMeta
 
     def do(self):
-        self.validation()
-        self.send()
+        if self.validation():
+            self.send()
+        else:
+            raise Exception
+
     @abc.abstractmethod    
     def send(self):
         pass
+
     @abc.abstractmethod
     def validation(self):
         pass
+    #vaildation will return True or False
 
     @staticmethod
     def factory(command: str):
         return eval(command+"()")
+
     #수신된 각 명령어 마다 해당 class 호출 될 수 있게.
 
 
