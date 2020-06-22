@@ -99,9 +99,12 @@ class DataFramer(Command):
         self.body = {}
         self.tailor = {}
         if self.client == None:
-            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect((ip_addr, port_number))
-            self.client = client
+            try:
+                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client.connect((ip_addr, port_number))
+                self.client = client
+            except Exception as e:
+                print(traceback.format_exc())
         else:
             pass
         self.oper = None
@@ -120,8 +123,9 @@ class DataGather(DataFramer):
 
     """
     def devide_header(self):
+        self.oper = self.get_operands()
         if self.oper == None:
-            pass
+            raise Exception
         else:
             pass
 
@@ -146,7 +150,7 @@ class DataGather(DataFramer):
         tmp_buffer = self.get_data_recv()
         operands = tmp_buffer[0:4] #명령어는 항상 고정길이.
         self.oper = operands.decode(encoding = encoding)
-        return self.oper #str 'TDAT' return
+        return operands.decode(encoding = encoding) #str 'TDAT' return
 
     def check_crc(self, data):
         pass
@@ -179,11 +183,13 @@ class TDAT(DataFramer):
         super().__init__(ip_addr, port_number)
 
     def making_header(self):
-        self.header['operand'] = 'TDAT'
-        self.header['factoryCode'] = factoryCode
-        self.header['chimneyCode'] = chimeyCode
-        self.header['length'] = self.check_code_length()
-        self.header['startedAt'] = DATETIME
+        self.header = {
+            'operand' : 'TDAT',
+            'factoryCode' : factoryCode,
+            'chimneyCode' : chimeyCode,
+            'length' : self.check_code_length(),
+            'startedAt' : DATETIME #this should be changed
+        }
 
     def making_body(self):
         #TODO: list up what should be in body
