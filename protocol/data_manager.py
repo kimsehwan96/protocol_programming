@@ -5,10 +5,10 @@ import datetime
 import json
 import traceback
 import command
+from command import Command
 
 filepath = 'profile.json'
 encoding = 'ascii'
-operands = command.operands #dict
 
 with open(filepath, 'r') as f:
     try:
@@ -19,27 +19,28 @@ with open(filepath, 'r') as f:
 ip_addr = response['target_ip']
 port_number = int(response['target_port'])
 
-class DataGather(object):
+class DataGather(Command):
     
     def __init__(self, ip, port):
         self.ip = ip_addr
         self.port = port_number
         self.buffer = None
         self.client = None
+        self.header = {}
         if self.client == None:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((ip_addr, port_number))
             self.client = client
         else:
             pass
-        self.oper
+        self.oper = None
 
     def get_data_recv(self):
         self.buffer = self.client.recv(1024)
         return self.buffer
 
     def check_init_frame(self):
-        if self.get_operands in operands:
+        if self.oper in command.operands:
             return True
         else:
             return False
@@ -56,8 +57,17 @@ class DataGather(object):
         self.oper = operands.decode(encoding = encoding)
         return self.oper #str 'TDAT' return
 
+    def validation(self):
+        pass
+
+    def send(self):
+        pass
+
+
 
 
 if __name__ == "__main__":
     data_gather = DataGather(ip_addr, port_number)
     data_gather.get_operands()
+    #Command.factory('TDAT').do()
+    DataGather.factory('TDAT').do()

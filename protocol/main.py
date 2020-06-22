@@ -16,7 +16,11 @@ def thread_run():
     print(count)
     oper = data_gather.get_operands()
     print(" this is oper {}".format(oper))
-    Command.factory(oper).do()
+    if data_gather.check_init_frame():
+        Command.factory(oper).do()
+        print("passed for checking init frame")
+    else:
+        print("faild to pass checking loigc")
     t = threading.Timer(5, thread_run)
     t.start()
     if count > 5:
