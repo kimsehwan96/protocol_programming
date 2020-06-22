@@ -3,7 +3,7 @@ import time
 import traceback
 import datetime
 from data_manager import DataGather
-from command import Command, ReceiveCmd, PDUM, TDAT
+from data_manager import Command
 
 count = 0
 data_gather = DataGather('127.0.0.1', 9999)
