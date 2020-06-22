@@ -31,6 +31,7 @@ class Command:
         #    self.send()
         #else:
         #    raise Exception
+        self.validation()
         self.send()
 
     @abc.abstractmethod    
@@ -59,6 +60,9 @@ class ReceiveCmd(Command):
 
 """
 below objects are describing what process sholud be done in specific command.
+아래 코드들은 명령어 (header + body + tailor 가 모두 수집되고, vaildation 체크가 끝났을 때 돌아야 하는 로직 임.)
+즉 DataGather 클래스에서 모든 checking logic 통과 / header + body + tailor 나눈 뒤에, 해당 헤더 바디 테일을 보고 로직이 돌아야 함
+
 """
 
 class PDUM(ReceiveCmd):
@@ -82,5 +86,6 @@ class TDAT(ReceiveCmd):
     def send(self):
         print("this oper is TDAT ! !")
         print("Parents class TDAT was executed!")
+
 
 Command.factory("TDAT").do()
