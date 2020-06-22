@@ -2,7 +2,7 @@
 
 from socket import *
 from time import sleep
-from header import Header
+from message_format import Header
 
 clientSock = socket(AF_INET, SOCK_STREAM)
 clientSock.connect(('127.0.0.1', 9999))
@@ -15,5 +15,5 @@ while True:
     print('받은 데이터 : ', data.decode('utf-8'))
     print(h.GetBytes())
     print(h.GetSize())
-    print(h.return_hex())
+    print(h.GetHex())
     sleep(1)

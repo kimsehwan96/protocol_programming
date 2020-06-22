@@ -36,20 +36,10 @@ class Header(BaseClass):
         pass
 
     def GetBytes(self):
-        return struct.pack(
-            self.struct_fmt,
-            """
-            *(
-                *self.operand,
-                *self.factory_code,
-                *self.chimney_code,
-                *self.msg_length,
-                *self.check_time
-            )
-            """
-            *self.all_code
-        )
-    
+        bf = list(self.all_code)
+        return struct.pack(self.struct_fmt, *bf)
+           
+
     def GetSize(self):
         print(self.struct_len)
         return self.struct_len
