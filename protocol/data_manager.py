@@ -4,6 +4,7 @@ import socket
 import datetime
 import json
 import traceback
+import struct
 
 #데이터 처리는 hex ascii로. byte로 받은 데이터를 ascii -> hex로 변환.
 dt = datetime.datetime.now()
@@ -46,12 +47,10 @@ class Command:
     __metaclass__ = abc.ABCMeta
 
     def do(self):
-        #if self.validation():
-        #    self.send()
-        #else:
-        #    raise Exception
-        self.validation()
-        self.send()
+        if self.validation():
+            self.send()
+        else:
+            raise Exception
 
     @abc.abstractmethod    
     def send(self):
@@ -187,18 +186,35 @@ class TDAT(DataFramer):
         self.header['startedAt'] = DATETIME
 
     def making_body(self):
+        #TODO: list up what should be in body
         pass
     
     def making_tail(self):
+        #TODO: check crc tailor logic
         pass
 
     def check_code_length(self):
-        return 5
+        return 40
     #TODO: before making all code, do check header + body + tail legnth & put is in the header
 
-    def making_code(self):
-        return self.header + self.body + self.tailor
+    def making_binary_code(self):
+        self.making_header()
+        self.making_body()
+        self.making_tail()
+        struct_fmt = '={}b'.format(self.check_code_length()) #struct to binary
+        binary_data = struct.pack(struct_fmt, *(
+            *self.header,
+            *self.body,
+            *self.tailor
+         )
+        ) 
+        return binary_data
         #TODO: making this code as binary code ! with struct.pack !! above is tmp
+
+    def validation(self):
+        #TODO: add 
+        # logic to check all code is right -> only True send logic will execute
+        return True
 
     def send(self):
         print("this oper is TDAT ! !")

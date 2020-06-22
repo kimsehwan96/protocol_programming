@@ -12,13 +12,15 @@ count = 0
 data_gather = DataGather('127.0.0.1', 9999)
 
 def thread_run():   
-    print("function executed ! {}".format(datetime.datetime.now()))
     global count
     count += 1
+
     print(count)
+    print("function executed ! {}".format(datetime.datetime.now()))
+
     oper = data_gather.get_operands()
-    #print(" this is oper {}".format(oper))
-    data_gather.factory(oper).do()
+    data_gather.factory(oper).do() #factory design
+    
     t = threading.Timer(5, thread_run)
     t.start()
     if count > 5:
