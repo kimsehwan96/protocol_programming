@@ -6,6 +6,8 @@ import json
 import traceback
 
 filepath = 'profile.json'
+encoding = 'ascii'
+
 with open(filepath, 'r') as f:
     try:
         response = json.load(f)
@@ -21,6 +23,10 @@ class DataGather(object):
         self.ip = ip_addr
         self.port = port_number
         self.client = None
+        if self.client == None:
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client.connect((ip_addr, port_number))
+            self.client = client
         self.buffer = None
 
     def check_init_frame(self):
@@ -29,8 +35,13 @@ class DataGather(object):
     def devide_header(self):
         pass
 
+    def get_operands(self):
+        operands = self.client.recv(4)
+        oper = operands.decode(encoding = encoding)
+        return oper #str 'TDAT' return
 
 
 
 if __name__ == "__main__":
-    pass
+    data_gather = DataGather(ip_addr, port_number)
+    data_gather.get_operands()

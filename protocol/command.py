@@ -6,12 +6,6 @@ import socket
 
 #데이터 처리는 hex ascii로. byte로 받은 데이터를 ascii -> hex로 변환.
 
-ip_addr = '127.0.0.1'
-port = 9999
-
-sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #TCP connections
-sk.connect((ip_addr, port))
-
 command = {
     "TDAT",
     "PDUM",
@@ -33,10 +27,11 @@ class Command:
     __metaclass__ = abc.ABCMeta
 
     def do(self):
-        if self.validation():
-            self.send()
-        else:
-            raise Exception
+        #if self.validation():
+        #    self.send()
+        #else:
+        #    raise Exception
+        self.send()
 
     @abc.abstractmethod    
     def send(self):
@@ -80,5 +75,11 @@ class PDUM2(ReceiveCmd):
     def send(self):
         print("PDUM2")
 
+class TDAT(ReceiveCmd):
+    def __init__(self):
+        pass
 
-Command.factory("PDUM").do()
+    def send(self):
+        print("this oper is TDAT ! !")
+
+Command.factory("TDAT").do()
