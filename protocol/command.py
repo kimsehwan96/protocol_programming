@@ -81,5 +81,6 @@ class TDAT(ReceiveCmd):
 
     def send(self):
         print("this oper is TDAT ! !")
+        print("Parents class TDAT was executed!")
 
 Command.factory("TDAT").do()

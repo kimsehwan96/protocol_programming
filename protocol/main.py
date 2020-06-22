@@ -14,9 +14,9 @@ def thread_run():
     count += 1
     print(count)
     oper = data_gather.get_operands()
-    print(" this is oper {}".format(oper))
+    #print(" this is oper {}".format(oper))
     if data_gather.check_init_frame():
-        Command.factory(oper).do()
+        data_gather.factory(oper).do()
         print("passed for checking init frame")
     else:
         print("faild to pass checking loigc")
