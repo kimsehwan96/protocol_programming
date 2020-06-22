@@ -19,14 +19,20 @@ with open(filepath, 'r') as f:
 ip_addr = response['target_ip']
 port_number = int(response['target_port'])
 
-class DataGather(Command):
+class DataFramer(Command):
     
     def __init__(self, ip, port):
         self.ip = ip_addr
         self.port = port_number
         self.buffer = None
         self.client = None
-        self.header = {}
+        self.header = {
+            'operand' : None,
+            'factoryCode' : None,
+            'chimneyCode' : None,
+            'length' : None,
+            'startedAt' : None,
+        }
         if self.client == None:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((ip_addr, port_number))
@@ -34,6 +40,25 @@ class DataGather(Command):
         else:
             pass
         self.oper = None
+
+    def validation(self):
+        pass
+
+    def send(self):
+        pass
+
+class DataGather(DataFramer):
+
+    """ 
+    this class will detecting header & do some needed logic
+
+    """
+
+    def devide_header(self):
+        if self.oper == None:
+            pass
+        else:
+            pass
 
     def get_data_recv(self):
         self.buffer = self.client.recv(1024)
@@ -44,20 +69,26 @@ class DataGather(Command):
             return True
         else:
             return False
-
-    def devide_header(self):
-        if self.oper == None:
-            pass
-        else:
-            pass
-
     def get_operands(self):
         tmp_buffer = self.get_data_recv()
         operands = tmp_buffer[0:4]
         self.oper = operands.decode(encoding = encoding)
         return self.oper #str 'TDAT' return
 
-    def validation(self):
+    def check_crc(self, data):
+        pass
+
+class DataSender(DataFramer):
+    """
+    this class will make some header & body & tail for server
+    """
+    def making_header(self):
+        pass
+
+    def making_body(self):
+        pass
+
+    def making_tail(self):
         pass
 
     def send(self):

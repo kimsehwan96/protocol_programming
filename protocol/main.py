@@ -8,8 +8,7 @@ from command import Command, ReceiveCmd, PDUM, TDAT
 count = 0
 data_gather = DataGather('127.0.0.1', 9999)
 
-def thread_run():
-   
+def thread_run():   
     print("function executed ! {}".format(datetime.datetime.now()))
     global count
     count += 1
