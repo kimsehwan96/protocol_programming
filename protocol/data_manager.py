@@ -193,7 +193,10 @@ class TDAT(DataFramer):
 
     def making_body(self):
         #TODO: list up what should be in body
-        pass
+        self.body = {
+            'countData' : response['countData'],
+            'payload' : response['payload']
+        }
     
     def making_tail(self):
         #TODO: check crc tailor logic
@@ -226,7 +229,9 @@ class TDAT(DataFramer):
         print("this oper is TDAT ! !")
         print("Parents class TDAT was executed!")
         self.making_header()
+        self.making_body()
         print("this is made header !! {}".format(self.header))
+        print("this is made body !! {}".format(self.body))
 
 
 

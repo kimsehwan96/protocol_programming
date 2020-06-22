@@ -1,8 +1,24 @@
 {
+    "version" : "1.0.0",
     "target_ip" : "127.0.0.1",
     "target_port": "9999",
     "edgeID" : "sehwan_test",
     "factoryCode" : "120001",
     "chimeyCode" : "001",
-    "describe" : "None"
+    "describe" : "None",
+    "countData" : 2,
+    "payload" : [
+        {
+            "equipmentCode" : "F0001",
+            "dataType" : "A",
+            "measureData" : "200",
+            "status" : "0"
+        },
+        {
+            "equipmentCode" : "F0001",
+            "dataType" : "A",
+            "measureData" : "-50.00",
+            "status" : "0"
+        }
+    ]
 }
