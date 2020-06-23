@@ -20,5 +20,11 @@
             "measureData" : "-50.00",
             "status" : "0"
         }
+    ],
+    "revpi_portnames" : [
+        "Inputvalue_1",
+        "Inputvalue_2",
+        "Inputvalue_3",
+        "RTDvalue_1"
     ]
 }
