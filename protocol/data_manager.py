@@ -37,6 +37,7 @@ operands = {
 with open(filepath, 'r') as f:
     try:
         response = json.load(f)
+        print("this is response", response)
     except Exception as e:
         print(traceback.format_exc())
 
@@ -206,7 +207,6 @@ class TDAT(DataFramer):
         for i in tmp_buf:
             tmp_text += i
         self.header = self.making_ascii(tmp_text)
-        print('this is header' , self.header)
 
     def making_body(self):
         #TODO: list up what should be in body
