@@ -6,6 +6,7 @@ from data_manager import DataFramer
 from data_manager import Command
 from data_manager import DataGather
 from revolution_pi import TestPi
+from batch_avg import DataStorer # 파이로부터 받은 데이터를 계속해서 저장 및 평균내기,
 from _thread import start_new_thread #메인스레드가 돌고 있을 때 새로운 서비스 요청이 들어오면
 
 # 새로운 스레드를 실행해서 프로세스를 처리한다 / 이 프로세스 처리 완료 될 때 까지 나머지 프로세스는
