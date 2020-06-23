@@ -21,7 +21,8 @@ class RevolutionPi:
         self.data = []
         for idx in range(self.data_length):
             self.data.append(0)
-
+            
+    @staticmethod
     def get_current_data(self):
         for idx in range(self.data_length):
             self.data[idx] = getattr(self.IO, self.port_names).value
