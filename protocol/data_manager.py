@@ -6,8 +6,8 @@ import json
 import traceback
 import struct
 
-from protocol.util import computeCRC
-from protocol.util import checkCRC
+from util import computeCRC
+from util import checkCRC
 #tailor의 crc vaildation check를 위해 필요함.
 
 #데이터 처리는 hex ascii로. byte로 받은 데이터를 ascii -> hex로 변환.
@@ -92,6 +92,7 @@ class DataFramer(Command):
         self.port = port_number
         self.buffer = None
         self.client = None
+        """
         self.header = {
             'operand' : None,
             'factoryCode' : None,
@@ -99,8 +100,10 @@ class DataFramer(Command):
             'length' : None,
             'startedAt' : None,
         }
-        self.body = {}
-        self.tailor = {}
+        """
+        self.header = []
+        self.body = []
+        self.tailor = []
         if self.client == None:
             try:
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -118,6 +121,13 @@ class DataFramer(Command):
 
     def send(self):
         pass
+
+    def making_ascii(self, buffer):
+        tmp_list = []
+        for idx in range(len(buffer)):
+            tmp_list.append(ord(buffer[idx]))
+        
+        return tmp_list
 
 class DataGather(DataFramer):
 
@@ -182,28 +192,43 @@ class TDAT(DataFramer):
         super().__init__(ip_addr, port_number)
 
     def making_header(self):
-        self.header = {
+        tmp_buf = []
+        tmp_text = ''
+        header = {
             'operand' : 'TDAT',
             'factoryCode' : factoryCode,
             'chimneyCode' : chimeyCode,
             'length' : self.check_code_length(),
             'startedAt' : DATETIME #this should be changed
         }
+        for k, v in enumerate(header):
+            tmp_buf.append(v)
+        for i in tmp_buf:
+            tmp_text += i
+        self.header = self.making_ascii(tmp_text)
+        print('this is header' , self.header)
 
     def making_body(self):
         #TODO: list up what should be in body
         #바디의 길이는 명령어에 따라서 가변이다.
-        self.body = {
+        tmp_buf = []
+        tmp_text = ''
+        body = {
             'countData' : response['countData'],
             'payload' : response['payload']
         }
+        for k,v in enumerate(body):
+            tmp_buf.append(v)
+        for i in tmp_buf:
+            tmp_text += i
+        self.body = self.making_ascii(tmp_text)
     
     def making_tail(self):
         #TODO: check crc tailor logic
         pass
 
     def check_code_length(self):
-        return 40
+        return len(self.header + self.body + self.tailor)
     #TODO: before making all code, do check header + body + tail legnth & put is in the header
 
     def making_binary_code(self):
@@ -211,12 +236,7 @@ class TDAT(DataFramer):
         self.making_body()
         self.making_tail()
         struct_fmt = '={}b'.format(self.check_code_length()) #struct to binary
-        binary_data = struct.pack(struct_fmt, *(
-            *self.header,
-            *self.body,
-            *self.tailor
-         )
-        ) 
+        binary_data = struct.pack(struct_fmt, *(self.header + self.body)) 
         return binary_data
         #TODO: making this code as binary code ! with struct.pack !! above is tmp
 
@@ -227,7 +247,10 @@ class TDAT(DataFramer):
 
     def send_to_server(self, data):
         #환경부 서버에 올리기위한 로직을 구현해야한다.
-        pass
+        try:
+            self.client.sendall(data) #커넥션 맺은 ip, port로 바이너리 데이터 전송.
+        except Exception as e:
+            print(traceback.format_exc())
 
 
     def send(self):
