@@ -246,7 +246,7 @@ class TDAT(DataFramer):
         return True
 
     def send_to_server(self, data):
-        #환경부 서버에 올리기위한 로직을 구현해야한다.
+        #서버에 올리기위한 로직을 구현해야한다.
         try:
             self.client.sendall(data) #커넥션 맺은 ip, port로 바이너리 데이터 전송.
         except Exception as e:
