@@ -259,7 +259,7 @@ class TDAT(DataFramer):
         self.making_tail()
         binary_data = self.making_binary_code()
 
-        self.send_to_server(binary_data)
+       #self.send_to_server(binary_data)
 
         #생성된 헤더+바디+테일을 바이너리 데이터로 말아서 환경부 서버에 올리는 로직 구현 해야 함.
 

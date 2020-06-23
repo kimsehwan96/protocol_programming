@@ -1,6 +1,7 @@
 import revpimodio2
 import traceback
 import json
+import random
 
 filepath = 'profile.json'
 IMGPATH = '/dev/picontrol0'
@@ -28,4 +29,16 @@ class RevolutionPi:
 
         return self.data #list will return [value, value, value, value]
         #revolution pi's data will return.
+
+
+class TestPi:
+    def __init__(self):
+        pass
+
+    def get_current_data(self):
+        a = random.randint(1, 1000)
+        b = random.randint(5,50)
+        c = random.randint(60, 1000)
+        print([a,b,c])
+        return [a, b, c]
         
