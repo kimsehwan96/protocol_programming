@@ -43,7 +43,14 @@ def update(event, context):
     response = {
         "statusCode": 200,
         "body": json.dumps(result['Attributes'],
-                           cls=decimalencoder.DecimalEncoder)
+                           cls=decimalencoder.DecimalEncoder),
+        "headers" : {
+            'Access-Control-Allow-Headers': 'Content-Type,Origin,Accep,\
+                X-Requested-With,Content-Type,Access-Control-Request-Method,\
+                    Access-Control-Request-Headers,Authorization',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,PUT,DELETE'
+        }
     }
 
     return response
