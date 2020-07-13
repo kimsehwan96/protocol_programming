@@ -1,0 +1,412 @@
+{
+  "service": {
+    "service": "graqhql-api-dev",
+    "serviceObject": {
+      "name": "graqhql-api-dev"
+    },
+    "provider": {
+      "stage": "dev",
+      "variableSyntax": "\\${([^{}]+?)}",
+      "name": "aws",
+      "runtime": "python3.7",
+      "memorySize": 1024,
+      "stackName": "graqhql-api-dev-dev",
+      "resourcesStackName": "graqhql-api-dev-resources-dev",
+      "apiResourcesStackName": "graqhql-api-dev-resources-dev",
+      "region": "ap-northeast-2",
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "GraphQlApi": {
+            "Type": "AWS::AppSync::GraphQLApi",
+            "Properties": {
+              "Name": "graqhql-api-dev-appsync",
+              "AuthenticationType": "API_KEY",
+              "AdditionalAuthenticationProviders": [],
+              "XrayEnabled": false
+            }
+          },
+          "GraphQlApiKeyDefault": {
+            "Type": "AWS::AppSync::ApiKey",
+            "Properties": {
+              "ApiId": {
+                "Fn::GetAtt": [
+                  "GraphQlApi",
+                  "ApiId"
+                ]
+              },
+              "Description": "serverless-appsync-plugin: AppSync API Key for GraphQlApiKeyDefault",
+              "Expires": 1626178153
+            }
+          },
+          "GraphQlSchema": {
+            "Type": "AWS::AppSync::GraphQLSchema",
+            "Properties": {
+              "Definition": "type Query {\n  posting(userName: String!): Posting\n}\n\ntype Posting {\n  userName: String!\n  text: String\n}\n\nschema {\n  query: Query\n}\n",
+              "ApiId": {
+                "Fn::GetAtt": [
+                  "GraphQlApi",
+                  "ApiId"
+                ]
+              }
+            }
+          },
+          "GraphQlDsDynamodbtestRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "appsync.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": "GraphQlDsDynamodbtestPolicy",
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Action": [
+                          "dynamodb:DeleteItem",
+                          "dynamodb:GetItem",
+                          "dynamodb:PutItem",
+                          "dynamodb:Query",
+                          "dynamodb:Scan",
+                          "dynamodb:UpdateItem",
+                          "dynamodb:BatchGetItem",
+                          "dynamodb:BatchWriteItem"
+                        ],
+                        "Effect": "Allow",
+                        "Resource": [
+                          {
+                            "Fn::Join": [
+                              ":",
+                              [
+                                "arn",
+                                "aws",
+                                "dynamodb",
+                                "ap-northeast-2",
+                                {
+                                  "Ref": "AWS::AccountId"
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "/",
+                                    [
+                                      "table",
+                                      "deployTest"
+                                    ]
+                                  ]
+                                }
+                              ]
+                            ]
+                          },
+                          {
+                            "Fn::Join": [
+                              "/",
+                              [
+                                {
+                                  "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GraphQlDsDynamodbtestRole\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][0][\"Resource\"][0]"
+                                },
+                                "*"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "GraphQlDsLocal": {
+            "Type": "AWS::AppSync::DataSource",
+            "Properties": {
+              "ApiId": {
+                "Fn::GetAtt": [
+                  "GraphQlApi",
+                  "ApiId"
+                ]
+              },
+              "Name": "Local",
+              "Description": "Local Data Source",
+              "Type": "NONE"
+            }
+          },
+          "GraphQlDsDynamodbtest": {
+            "Type": "AWS::AppSync::DataSource",
+            "Properties": {
+              "ApiId": {
+                "Fn::GetAtt": [
+                  "GraphQlApi",
+                  "ApiId"
+                ]
+              },
+              "Name": "Dynamodb_test",
+              "Type": "AMAZON_DYNAMODB",
+              "ServiceRoleArn": {
+                "Fn::GetAtt": [
+                  "GraphQlDsDynamodbtestRole",
+                  "Arn"
+                ]
+              },
+              "DynamoDBConfig": {
+                "AwsRegion": "ap-northeast-2",
+                "TableName": "deployTest",
+                "UseCallerCredentials": false,
+                "Versioned": false
+              }
+            }
+          },
+          "GraphQlResolverQueryposting": {
+            "Type": "AWS::AppSync::Resolver",
+            "DependsOn": "GraphQlSchema",
+            "Properties": {
+              "ApiId": {
+                "Fn::GetAtt": [
+                  "GraphQlApi",
+                  "ApiId"
+                ]
+              },
+              "TypeName": "Query",
+              "FieldName": "posting",
+              "RequestMappingTemplate": "#set($targetKey = \"userName\")\n#if (!$util.isNullOrEmpty($context.arguments[$targetKey]))\n  #set($targetValue = $context.arguments[$targetKey])\n#elseif (!$util.isNullOrEmpty($context.prev.result[$targetKey]))\n  #set($targetValue = $context.prev.result[$targetKey])\n#elseif (!$util.isNullOrEmpty($context.source[$targetKey]))\n  #set($targetValue = $context.source[$targetKey])\n#else\n  #set($targetValue = \"\")\n#end\n\n#set($keys = [])\n#foreach($item in $targetValue)\n  #set($map = {})\n  $util.qr($map.put(\"userName\", $item))\n  $util.qr($keys.add($map))\n#end\n\n\n\n{\n  \"table\": \"${deployTest}\",\n  \"keys\": $util.toJson($keys)\n}",
+              "ResponseMappingTemplate": "#set($response = $context.result)\n\n#if ($util.isNull($response.items))\n  #if ($util.isMap($response))\n    $util.qr($response.put(\"__typename\", $response.type))\n  #end\n  $util.toJson($response)\n#else\n  #set($itemsWithTypename = [])\n  #foreach($item in $response.items)\n    $util.qr($item.put(\"__typename\", $item.type))\n    $util.qr($itemsWithTypename.add($item))\n  #end\n  $util.toJson($itemsWithTypename)\n#end",
+              "Kind": "PIPELINE",
+              "PipelineConfig": {
+                "Functions": [
+                  {
+                    "Fn::GetAtt": [
+                      "GraphQlFunctionConfigurationDynamodbGetPosting",
+                      "FunctionId"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "GraphQlApiUrl": {
+            "Value": {
+              "Fn::GetAtt": [
+                "GraphQlApi",
+                "GraphQLUrl"
+              ]
+            }
+          },
+          "GraphQlApiId": {
+            "Value": {
+              "Fn::GetAtt": [
+                "GraphQlApi",
+                "ApiId"
+              ]
+            }
+          },
+          "GraphQlApiKeyDefault": {
+            "Value": {
+              "Fn::GetAtt": [
+                "GraphQlApiKeyDefault",
+                "ApiKey"
+              ]
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      }
+    },
+    "custom": {
+      "appSync": {
+        "name": "graqhql-api-dev-appsync",
+        "authenticationType": "API_KEY",
+        "mappingTemplatesLocation": "src",
+        "substitutions": {
+          "TABLE": "arn:aws:dynamodb:ap-northeast-2:671221010754:table/deployTest"
+        },
+        "schema": [
+          "schema.graphql"
+        ],
+        "dataSources": [
+          {
+            "type": "NONE",
+            "name": "Local",
+            "description": "Local Data Source"
+          },
+          {
+            "type": "AMAZON_DYNAMODB",
+            "name": "Dynamodb_test",
+            "config": {
+              "tableName": "deployTest"
+            }
+          }
+        ],
+        "mappingTemplates": [
+          {
+            "type": "Query",
+            "field": "posting",
+            "dataSource": "Dynamodb_test",
+            "request": "request.vtl",
+            "response": "response.vtl",
+            "kind": "PIPELINE",
+            "functions": [
+              "DynamodbGetPosting"
+            ]
+          }
+        ]
+      }
+    },
+    "plugins": [
+      "serverless-appsync-plugin"
+    ],
+    "pluginsData": {},
+    "functions": {},
+    "serviceFilename": "serverless.yml",
+    "layers": {},
+    "isDashboardMonitoringPreconfigured": false
+  },
+  "package": {
+    "individually": true,
+    "artifactDirectoryName": "serverless/graqhql-api-dev/dev/1594642153857-2020-07-13T12:09:13.857Z",
+    "artifact": ""
+  }
+}

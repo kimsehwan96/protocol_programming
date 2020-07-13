@@ -10,6 +10,7 @@ def authenticate_and_get_token(username: str, password: str, app_client_id: str)
         AuthParameters={
             "USERNAME": username,
             "PASSWORD": password
+#            "COMPANYID": "ingkle"
         }
     )
 

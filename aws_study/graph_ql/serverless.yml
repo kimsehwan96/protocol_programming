@@ -1,0 +1,59 @@
+service: graqhql-api-dev
+
+provider:
+  name: aws
+  runtime: python3.7
+  memorySize: 1024
+  stage: dev
+  stackName: ${self:service}-${self:provider.stage}
+  resourcesStackName: ${self:service}-resources-${self:provider.stage}
+  apiResourcesStackName: ${self:service}-resources-${self:provider.stage}
+package:
+  individually: true
+  exclude:
+    - node_modules/**
+
+iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "cognito-identity:*"
+        - "cognito-idp:*"
+        - "logs:*"
+        - "dynamodb:*"
+        - "lambda:*"
+        - "s3:*"
+        - "iot:*"
+        - "iotevents:*"
+        - "sns:Publish"
+        - "athena:StartQueryExecution"
+        - "athena:Get*"
+        - "glue:Get*"
+      Resource: "*" 
+custom:
+  appSync:
+    name: ${self:service}-appsync
+    authenticationType: API_KEY
+    mappingTemplatesLocation: src
+    substitutions: 
+      TABLE: arn:aws:dynamodb:ap-northeast-2:671221010754:table/deployTest
+    schema:
+      - schema.graphql
+    dataSources:
+      - type: NONE
+        name: Local
+        description: "Local Data Source"
+      - type : AMAZON_DYNAMODB
+        name: Dynamodb_test
+        config:
+          tableName: deployTest
+    mappingTemplates:
+      - type: Query
+        field: posting
+        dataSource: Dynamodb_test
+        request: request.vtl
+        response: response.vtl
+        kind: PIPELINE
+        functions:
+          - DynamodbGetPosting
+plugins:
+   - serverless-appsync-plugin

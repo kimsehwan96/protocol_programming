@@ -1,0 +1,24 @@
+#set($targetKey = "userName")
+#if (!$util.isNullOrEmpty($context.arguments[$targetKey]))
+  #set($targetValue = $context.arguments[$targetKey])
+#elseif (!$util.isNullOrEmpty($context.prev.result[$targetKey]))
+  #set($targetValue = $context.prev.result[$targetKey])
+#elseif (!$util.isNullOrEmpty($context.source[$targetKey]))
+  #set($targetValue = $context.source[$targetKey])
+#else
+  #set($targetValue = "")
+#end
+
+#set($keys = [])
+#foreach($item in $targetValue)
+  #set($map = {})
+  $util.qr($map.put("userName", $item))
+  $util.qr($keys.add($map))
+#end
+
+
+
+{
+  "table": "${deployTest}",
+  "keys": $util.toJson($keys)
+}

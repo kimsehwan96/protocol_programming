@@ -1,0 +1,15 @@
+#set($response = $context.result)
+
+#if ($util.isNull($response.items))
+  #if ($util.isMap($response))
+    $util.qr($response.put("__typename", $response.type))
+  #end
+  $util.toJson($response)
+#else
+  #set($itemsWithTypename = [])
+  #foreach($item in $response.items)
+    $util.qr($item.put("__typename", $item.type))
+    $util.qr($itemsWithTypename.add($item))
+  #end
+  $util.toJson($itemsWithTypename)
+#end
