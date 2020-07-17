@@ -1,29 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head lang="en">
+  <body>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var socket = io.connect("http://" + document.domain + ":" + location.port + "/mynamespace");
-
-            socket.on('message', function(message)){
-                $("#received").append('<p> '+ message.message);
-            
-
-        });
-    </script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-    <meta charset="UTF-8">
-    <title>websock test</title>
-</head>
-<body>
- 
-<h1>Received</h1>
-<div id="received">
- 
+<script>
+    var binder = io("http://localhost:9999/data");
+      setInterval(function() {
+        binder.emit('request', {'time': Date.now()});
+      }, 1000);
+      binder.on('rtdata', function(data) {
+        console.log('binder buffered: ', data)
+        var target = document.querySelector('#value_1')
+        target.innerHTML = data.data
+      });   
+</script>
+<div id='value_1'>
 </div>
- 
-</body>
+  </body>
 </html>
