@@ -1,11 +1,29 @@
+<!DOCTYPE html>
 <html>
-    <head>test page</head>
-    <body>
-        <div>
-            <h1>this is test for local view</h1>
-        </div>
-        <div>
-            <p1>this is test var : {{ var }} </p1>
-        </div>
-    </body>
+<head lang="en">
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var socket = io.connect("http://" + document.domain + ":" + location.port + "/mynamespace");
+
+            socket.on('message', function(message)){
+                $("#received").append('<p> '+ message.message);
+            
+
+        });
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>websock test</title>
+</head>
+<body>
+ 
+<h1>Received</h1>
+<div id="received">
+ 
+</div>
+ 
+</body>
 </html>
