@@ -32,10 +32,6 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
-@socketio.on('data_test', namespace='/test')
-def test_send(msg):
-    print('get data : ', msg)
-
 @socketio.on('request', namespace='/data')
 def push_values(msg):
     emit('rtdata', {'data':making_number()})
@@ -43,6 +39,8 @@ def push_values(msg):
 
 def making_number():
     return random.randint(1,100)
+
+
 
 
 if __name__ == '__main__':
