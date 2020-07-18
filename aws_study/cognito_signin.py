@@ -23,5 +23,5 @@ def authenticate_and_get_token(username: str, password: str, app_client_id: str)
 
 
 if __name__ == "__main__":
-    authenticate_and_get_token("ingkle.korea@gmail.com", "ingkle1",  "7makvn26ktugtskjc653nbrni7")
+    authenticate_and_get_token("ingkle.korea@gmail.com", "ingkle1",  "4i7l7cm8vksjtsrgmjgik1qcd0")
     
